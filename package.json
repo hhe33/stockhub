@@ -1,0 +1,9 @@
+{
+  "name": "stockhub-root",
+  "private": true,
+  "dependencies": {
+    "tailwindcss": "^4.2.0",
+    "@tailwindcss/postcss": "^4.2.0",
+    "postcss": "^8.5"
+  }
+}

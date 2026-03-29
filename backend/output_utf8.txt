@@ -1,0 +1,32 @@
+[dotenv@17.3.1] injecting env (3) from .env -- tip: 🔐 prevent building .env in docker: https://dotenvx.com/prebuild
+Connected to MongoDB successfully
+Total Sales in DB: 4
+Last 3 sales (compact):
+- ID: 69c47c91ece59665c5c335ba, Store: 69c42311d9b717a5d2c05cf9, Total: 2000, Date: Thu Mar 26 2026 00:23:45 GMT+0000 (heure moyenne de Greenwich)
+- ID: 69c47bb558a50956afb08dd3, Store: 69c47bb458a50956afb08dcb, Total: 499.95, Date: Thu Mar 26 2026 00:20:05 GMT+0000 (heure moyenne de Greenwich)
+- ID: 69c42313d9b717a5d2c05d13, Store: 69c42311d9b717a5d2c05cf9, Total: 800, Date: Wed Mar 25 2026 18:01:55 GMT+0000 (heure moyenne de Greenwich)
+
+Full detail of most recent sale:
+{
+  "_id": "69c47c91ece59665c5c335ba",
+  "store": "69c42311d9b717a5d2c05cf9",
+  "items": [
+    {
+      "product": "69c42311d9b717a5d2c05cfb",
+      "quantity": 1,
+      "unitPrice": 1200,
+      "subtotal": 1200,
+      "_id": "69c47c91ece59665c5c335bb"
+    },
+    {
+      "product": "69c42311d9b717a5d2c05cfd",
+      "quantity": 1,
+      "unitPrice": 800,
+      "subtotal": 800,
+      "_id": "69c47c91ece59665c5c335bc"
+    }
+  ],
+  "total": 2000,
+  "date": "2026-03-26T00:23:45.024Z",
+  "__v": 0
+}
