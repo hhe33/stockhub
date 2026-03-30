@@ -209,9 +209,11 @@ router.get("/sales-by-category", protect, async (req, res) => {
         }
       }
     ]);
-    res.json(result.map(r => ({
+    const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#06b6d4', '#f97316'];
+    res.json(result.map((r, i) => ({
       category: r._id.charAt(0).toUpperCase() + r._id.slice(1),
-      sales: r.totalRevenue
+      sales: r.totalRevenue,
+      fill: CHART_COLORS[i % CHART_COLORS.length]
     })));
   } catch (error) {
     res.status(500).json({ message: error.message });
