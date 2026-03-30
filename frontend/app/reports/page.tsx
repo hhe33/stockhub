@@ -1,5 +1,7 @@
 "use client"
 
+const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#06b6d4', '#f97316'];
+
 import { useState, useEffect } from "react"
 import { DashboardLayout } from "@/components/dashboard/dashboard-layout"
 import { TopNavbar } from "@/components/dashboard/top-navbar"
@@ -69,8 +71,7 @@ export default function ReportsPage() {
       setStores(storesData)
       setSummary(summaryData)
       setSalesTrend(trendData)
-      const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#06b6d4', '#f97316'];
-      setCategoryData(categoriesSales.map((c: any, i: number) => ({
+      setCategoryData((categoriesSales || []).map((c: any, i: number) => ({
         ...c,
         fill: CHART_COLORS[i % CHART_COLORS.length]
       })))
@@ -333,7 +334,7 @@ export default function ReportsPage() {
                         nameKey="category"
                       >
                         {categoryData.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.fill} />
+                          <Cell key={`cell-${index}`} fill={CHART_COLORS[index % CHART_COLORS.length]} />
                         ))}
                       </Pie>
                       <Tooltip 
