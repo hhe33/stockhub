@@ -15,10 +15,13 @@ import {
   MoreHorizontal,
   TrendingUp,
   ShoppingCart,
+  Calendar,
   Loader2,
 } from "lucide-react"
 import { useState, useEffect } from "react"
 import { dashboardApi, analyticsApi } from "@/lib/api-client"
+import { Input } from "@/components/ui/input"
+import { Field, FieldLabel } from "@/components/ui/field"
 import {
   BarChart,
   Bar,
@@ -46,6 +49,8 @@ const quickActions = [
 ]
 
 export default function DashboardPage() {
+  const [dateFrom, setDateFrom] = useState(new Date(new Date().setDate(new Date().getDate() - 30)).toISOString().split('T')[0])
+  const [dateTo, setDateTo] = useState(new Date().toISOString().split('T')[0])
   const [stats, setStats] = useState<any>(null)
   const [salesData, setSalesData] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
@@ -53,9 +58,11 @@ export default function DashboardPage() {
   useEffect(() => {
     async function loadData() {
       try {
+        setLoading(true)
+        const params = { from: dateFrom, to: dateTo }
         const [dashboardData, analyticsData] = await Promise.all([
-          dashboardApi.getStats(),
-          analyticsApi.getSalesByStore()
+          dashboardApi.getStats(params),
+          analyticsApi.getSalesByStore(params)
         ])
         setStats(dashboardData)
         setSalesData(analyticsData)
@@ -66,7 +73,7 @@ export default function DashboardPage() {
       }
     }
     loadData()
-  }, [])
+  }, [dateFrom, dateTo])
 
   if (loading || !stats) {
     return (
@@ -137,11 +144,41 @@ export default function DashboardPage() {
           </div>
         </div>
 
-        {/* Section Label */}
-        <div className="flex items-center gap-4 px-2">
-          <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
-          <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/30">Intelligence Metrics</h3>
-          <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+        {/* Section Label & Date Filtering */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 px-2">
+          <div className="space-y-4 flex-1">
+            <div className="flex items-center gap-4">
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+              <h3 className="text-[10px] font-black uppercase tracking-[0.5em] text-muted-foreground/30">Intelligence Metrics</h3>
+              <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-white/10 to-transparent" />
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 bg-background/40 backdrop-blur-md border border-white/5 p-4 rounded-2xl shadow-xl">
+            <Field className="w-40">
+              <FieldLabel className="text-[9px] uppercase font-mono tracking-widest text-primary/70 mb-1.5 flex items-center gap-1.5">
+                <Calendar className="w-3 h-3" /> From
+              </FieldLabel>
+              <Input
+                type="date"
+                value={dateFrom}
+                onChange={(e) => setDateFrom(e.target.value)}
+                className="h-9 text-xs bg-background/50 border-white/5 rounded-lg focus:ring-1 focus:ring-primary/20 [color-scheme:dark]"
+              />
+            </Field>
+            <div className="h-8 w-[1px] bg-white/5 self-end mb-1" />
+            <Field className="w-40">
+              <FieldLabel className="text-[9px] uppercase font-mono tracking-widest text-primary/70 mb-1.5 flex items-center gap-1.5">
+                <Calendar className="w-3 h-3" /> To
+              </FieldLabel>
+              <Input
+                type="date"
+                value={dateTo}
+                onChange={(e) => setDateTo(e.target.value)}
+                className="h-9 text-xs bg-background/50 border-white/5 rounded-lg focus:ring-1 focus:ring-primary/20 [color-scheme:dark]"
+              />
+            </Field>
+          </div>
         </div>
 
         {/* Stats Grid */}

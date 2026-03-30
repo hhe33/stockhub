@@ -19,7 +19,6 @@ class _DashboardScreenState extends State<DashboardScreen>
   bool _isLoading = true;
   late AnimationController _pingCtrl;
 
-  // Quick actions (from web)
   static const List<Map<String, dynamic>> _quickActions = [
     {'label': 'Add Product', 'route': '/products', 'icon': LucideIcons.package, 'color': Color(0xFF3B82F6)},
     {'label': 'New Sale', 'route': '/sales', 'icon': LucideIcons.shoppingCart, 'color': Color(0xFF10B981)},
@@ -39,8 +38,12 @@ class _DashboardScreenState extends State<DashboardScreen>
 
   Future<void> _loadDashboard() async {
     setState(() => _isLoading = true);
-    final data = await _apiService.getDashboard();
-    final summary = await _apiService.getSummary();
+    
+    final from = _startDate.toString().split(' ')[0];
+    final to = _endDate.toString().split(' ')[0];
+    
+    final data = await _apiService.getDashboard(from: from, to: to);
+    final summary = await _apiService.getSummary(from: from, to: to);
     // Try to get fresh user data
     var user = await _apiService.getMe();
     user ??= await _apiService.getUser();
@@ -54,6 +57,35 @@ class _DashboardScreenState extends State<DashboardScreen>
       _recentSales = data?['recentSales'] ?? [];
       _isLoading = false;
     });
+  }
+
+  Future<void> _selectDateRange() async {
+    final DateTimeRange? picked = await showDateRangePicker(
+      context: context,
+      initialDateRange: DateTimeRange(start: _startDate, end: _endDate),
+      firstDate: DateTime(2020),
+      lastDate: DateTime(2030),
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            colorScheme: ColorScheme.light(
+              primary: WColors.primary,
+              onPrimary: Colors.white,
+              onSurface: WColors.foreground,
+            ),
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (picked != null) {
+      setState(() {
+        _startDate = picked.start;
+        _endDate = picked.end;
+      });
+      _loadDashboard();
+    }
   }
 
   @override
@@ -265,11 +297,44 @@ class _DashboardScreenState extends State<DashboardScreen>
   }
 
   Widget _buildContent() {
+    final fromStr = _startDate.toString().split(' ')[0];
+    final toStr = _endDate.toString().split(' ')[0];
+
     return SingleChildScrollView(
       padding: const EdgeInsets.all(20),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          // ── DATE RANGE PICKER ───────────────────────────────────────────
+          GestureDetector(
+            onTap: _selectDateRange,
+            child: Container(
+              margin: const EdgeInsets.bottom(20),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+              decoration: BoxDecoration(
+                color: Colors.white.withOpacity(0.05),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: Colors.white.withOpacity(0.08)),
+              ),
+              child: Row(
+                children: [
+                  const Icon(LucideIcons.calendar, size: 16, color: WColors.primary),
+                  const SizedBox(width: 12),
+                  Text(
+                    '$fromStr  →  $toStr',
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: WColors.foreground,
+                      letterSpacing: 0.5,
+                    ),
+                  ),
+                  const Spacer(),
+                  const Icon(LucideIcons.chevronDown, size: 14, color: WColors.mutedFg),
+                ],
+              ),
+            ),
+          ),
           // ── COMMAND CENTRAL HERO ─────────────────────────────────────────
           GlassCard(
             borderRadius: 32,

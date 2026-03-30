@@ -46,12 +46,23 @@ const { protect } = require("../middleware/authMiddleware");
  */
 router.get("/", protect, async (req, res) => {
     try {
+        const { from, to } = req.query;
+        const dateQuery = {};
+        if (from || to) {
+            dateQuery.date = {};
+            if (from) dateQuery.date.$gte = new Date(from);
+            if (to) dateQuery.date.$lte = new Date(to);
+        }
+
         const [productCount, storeCount, totalSales, lowStockItems, recentSales, totalLowStockCount] = await Promise.all([
             Product.countDocuments({ user: req.user._id }),
             Store.countDocuments({ status: "active", user: req.user._id }),
-            Sale.aggregate([{ $match: { user: req.user._id } }, { $group: { _id: null, total: { $sum: "$total" } } }]),
+            Sale.aggregate([
+                { $match: { user: req.user._id, ...dateQuery } }, 
+                { $group: { _id: null, total: { $sum: "$total" } } }
+            ]),
             Inventory.find({ user: req.user._id, $expr: { $lte: ["$quantity", "$minStock"] } }).populate("product").populate("store").limit(5),
-            Sale.find({ user: req.user._id }).sort({ date: -1 }).limit(5).populate("items.product").populate("store"),
+            Sale.find({ user: req.user._id, ...dateQuery }).sort({ date: -1 }).limit(5).populate("items.product").populate("store"),
             Inventory.countDocuments({ user: req.user._id, $expr: { $lte: ["$quantity", "$minStock"] } })
         ]);
 

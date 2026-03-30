@@ -86,7 +86,14 @@ export const categoriesApi = {
 };
 
 export const dashboardApi = {
-    getStats: () => apiClient.get("/dashboard"),
+    getStats: (params: { from?: string; to?: string } = {}) => {
+        let qs = "";
+        const parts = [];
+        if (params.from) parts.push(`from=${params.from}`);
+        if (params.to) parts.push(`to=${params.to}`);
+        if (parts.length > 0) qs = "?" + parts.join("&");
+        return apiClient.get(`/dashboard${qs}`);
+    },
 };
 
 export const analyticsApi = {

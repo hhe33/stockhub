@@ -273,13 +273,19 @@ class ApiService {
     }
   }
 
-  Future<Map<String, dynamic>?> getDashboard() async {
+  Future<Map<String, dynamic>?> getDashboard({String? from, String? to}) async {
     final token = await getToken();
     if (token == null) return null;
 
     try {
+      String qs = '';
+      List<String> parts = [];
+      if (from != null) parts.add('from=$from');
+      if (to != null) parts.add('to=$to');
+      if (parts.isNotEmpty) qs = '?' + parts.join('&');
+
       final response = await http.get(
-        Uri.parse('$baseUrl/dashboard'),
+        Uri.parse('$baseUrl/dashboard$qs'),
         headers: {
           'Content-Type': 'application/json',
           'Authorization': 'Bearer $token',
