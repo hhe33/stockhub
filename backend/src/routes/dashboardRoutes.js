@@ -103,9 +103,9 @@ router.get("/", protect, async (req, res) => {
                 status: i.quantity === 0 ? "out-of-stock" : "low-stock"
             })),
             stockDistribution: [
-                { name: "In Stock", value: distribution.inStock, fill: "var(--color-chart-1)" },
-                { name: "Low Stock", value: distribution.lowStock, fill: "var(--color-chart-4)" },
-                { name: "Out of Stock", value: distribution.outOfStock, fill: "var(--color-chart-5)" },
+                { name: "In Stock", value: distribution.inStock, fill: "#10b981" },
+                { name: "Low Stock", value: distribution.lowStock, fill: "#f59e0b" },
+                { name: "Out of Stock", value: distribution.outOfStock, fill: "#ef4444" },
             ]
         });
 

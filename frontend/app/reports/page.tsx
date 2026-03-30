@@ -69,9 +69,10 @@ export default function ReportsPage() {
       setStores(storesData)
       setSummary(summaryData)
       setSalesTrend(trendData)
+      const CHART_COLORS = ['#3b82f6', '#10b981', '#f59e0b', '#8b5cf6', '#f43f5e', '#06b6d4', '#f97316'];
       setCategoryData(categoriesSales.map((c: any, i: number) => ({
         ...c,
-        fill: `var(--color-chart-${(i % 5) + 1})`
+        fill: CHART_COLORS[i % CHART_COLORS.length]
       })))
       setStorePerformance(performance)
     } catch (err) {
