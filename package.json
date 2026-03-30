@@ -1,6 +1,9 @@
 {
   "name": "stockhub-root",
   "private": true,
+  "scripts": {
+    "start": "npm start --prefix backend"
+  },
   "dependencies": {
     "tailwindcss": "^4.2.0",
     "@tailwindcss/postcss": "^4.2.0",
